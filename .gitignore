@@ -17,3 +17,6 @@ coverage
 
 # NPM
 package-lock.json
+
+# Local History
+.history
