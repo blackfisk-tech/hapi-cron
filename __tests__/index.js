@@ -2,8 +2,9 @@
  1. Dependencies
  *********************************************************************************/
 
-const HapiCron = require('../lib');
-const Hapi = require('@hapi/hapi');
+import * as HapiCron from '../lib/index.js';
+import Hapi from '@hapi/hapi';
+import { jest } from '@jest/globals';
 
 
 /*********************************************************************************
@@ -30,6 +31,7 @@ describe('registration assertions', () => {
                 plugin: HapiCron,
                 options: {
                     jobs: [{
+                        hash: 'testcron',
                         name: 'testname',
                         time: '*/10 * * * * *',
                         timezone: 'Europe/London',
@@ -37,6 +39,7 @@ describe('registration assertions', () => {
                             url: '/test-url'
                         }
                     }, {
+                        hash: 'testcron',
                         name: 'testname',
                         time: '*/10 * * * * *',
                         timezone: 'Europe/London',
@@ -48,7 +51,7 @@ describe('registration assertions', () => {
             });
         }
         catch (err) {
-            expect(err.message).toEqual('Job name has already been defined');
+            expect(err.message).toEqual('Job id has already been defined');
         }
     });
 
@@ -251,6 +254,7 @@ describe('plugin functionality', () => {
             plugin: HapiCron,
             options: {
                 jobs: [{
+                    hash: 'testcron',
                     name: 'testcron',
                     time: '*/10 * * * * *',
                     timezone: 'Europe/London',
@@ -266,7 +270,7 @@ describe('plugin functionality', () => {
         expect(server.plugins['hapi-cron'].jobs.testcron).toBeDefined();
     });
 
-    it('should ensure the request and callback from the plugin options are triggered', async (done) => {
+    it('should ensure the request and callback from the plugin options are triggered', async () => {
 
         const onComplete = jest.fn();
         const server = new Hapi.Server();
@@ -275,6 +279,7 @@ describe('plugin functionality', () => {
             plugin: HapiCron,
             options: {
                 jobs: [{
+                    hash: 'testcron',
                     name: 'testcron',
                     time: '*/10 * * * * *',
                     timezone: 'Europe/London',
@@ -297,7 +302,7 @@ describe('plugin functionality', () => {
 
             expect(request.method).toBe('get');
             expect(request.path).toBe('/test-url');
-            done();
+            return true
         });
 
         expect(onComplete).not.toHaveBeenCalled();
@@ -306,6 +311,7 @@ describe('plugin functionality', () => {
 
         expect(onComplete).toHaveBeenCalledTimes(1);
         expect(onComplete).toHaveBeenCalledWith('hello world');
+        return true
     });
 
     it('should not start the jobs until the server starts', async () => {
@@ -316,6 +322,7 @@ describe('plugin functionality', () => {
             plugin: HapiCron,
             options: {
                 jobs: [{
+                    hash: 'testcron',
                     name: 'testcron',
                     time: '*/10 * * * * *',
                     timezone: 'Europe/London',
@@ -327,11 +334,11 @@ describe('plugin functionality', () => {
             }
         });
 
-        expect(server.plugins['hapi-cron'].jobs.testcron.running).toBeUndefined();
+        expect(server.plugins['hapi-cron'].jobs.testcron.isActive).toBe(false);
 
         await server.start();
 
-        expect(server.plugins['hapi-cron'].jobs.testcron.running).toBe(true);
+        expect(server.plugins['hapi-cron'].jobs.testcron.isActive).toBe(true);
 
         await server.stop();
     });
@@ -344,6 +351,7 @@ describe('plugin functionality', () => {
             plugin: HapiCron,
             options: {
                 jobs: [{
+                    hash: 'testcron',
                     name: 'testcron',
                     time: '*/10 * * * * *',
                     timezone: 'Europe/London',
@@ -357,10 +365,10 @@ describe('plugin functionality', () => {
 
         await server.start();
 
-        expect(server.plugins['hapi-cron'].jobs.testcron.running).toBe(true);
+        expect(server.plugins['hapi-cron'].jobs.testcron.isActive).toBe(true);
 
         await server.stop();
 
-        expect(server.plugins['hapi-cron'].jobs.testcron.running).toBe(false);
+        expect(server.plugins['hapi-cron'].jobs.testcron.isActive).toBe(false);
     });
 });
