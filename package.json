@@ -5,7 +5,7 @@
   "description": "A Hapi plugin to setup cron jobs that will call predefined server routes at specified times",
   "exports": "./lib/index.js",
   "scripts": {
-    "test": "npm run eslint && NODE_OPTIONS=--experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "test": "npm run eslint && NODE_OPTIONS=--experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --coverage",
     "eslint": "eslint ."
   },
   "repository": {
