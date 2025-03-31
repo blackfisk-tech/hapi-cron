@@ -5,7 +5,6 @@ A Hapi plugin to setup cron jobs that will call predefined server routes at spec
 
 ## Requirements
 This plugin is compatible with **hapi** v17+ and requires Node v8+.
-If you need a version compatible with **hapi** v16 please install version [0.0.3](https://github.com/antonsamper/hapi-cron/releases/tag/v0.0.3).
 
 
 ## Installation
@@ -18,8 +17,8 @@ $ npm install --save hapi-cron
 
 ## Usage
 ```javascript
-const Hapi = require('@hapi/hapi');
-const HapiCron = require('hapi-cron');
+import Hapi from '@hapi/hapi';
+import HapiCron from 'hapi-cron';
 
 const server = new Hapi.Server();
 
